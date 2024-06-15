@@ -61,7 +61,11 @@ export default function SignUpScreen() {
       </View>
     </View>
   );
+
+  ;
 }
+
+
 
 const styles = StyleSheet.create({
   container: {

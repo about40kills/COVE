@@ -1,5 +1,5 @@
 import React, { useState, useRef,useEffect } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, Dimensions, NativeSyntheticEvent, NativeScrollEvent } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, Dimensions, NativeSyntheticEvent, NativeScrollEvent, Image } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Video } from 'expo-av';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
@@ -30,7 +30,7 @@ export default function ReelsScreen() {
 
   const VideoList: React.FC<VideoListProps> = ({ videos }) => {
     const flatListRef = useRef<FlatList<VideoItem>>(null);
-    const videoRefs = useRef<Video[]>([]); // Change to Video from expo-av
+    const videoRefs = useRef<(Video | null)[]>([]); // Change to Video from expo-av
     const [currentIndex, setCurrentIndex] = useState(0);
     const router = useRouter();
 
@@ -61,22 +61,39 @@ export default function ReelsScreen() {
             isLooping
             useNativeControls={false}
           />
+          
           <View style={styles.reelInfo}>
-            <View style={{}}>
-            <Text style={styles.reelUser}>{item.user}</Text>
+            <View style={{display: 'flex', flexDirection: 'column', justifyContent: 'space-between'}}>
+              <View style={{display: 'flex',flexDirection: 'row',justifyContent: "space-between",alignItems: 'center',gap: 10,marginBottom: 20}}>
+                <TouchableOpacity style={{width: 40, height: 40,borderRadius: 50,backgroundColor: '#d4d4d4'}} onPress={()=>{router.push("../ReelProfile")}}>
+
+                </TouchableOpacity>
+              <Text style={styles.reelUser}>{item.user}</Text>
+              <TouchableOpacity style={styles.followButton} onPress={() => router.push('/reelprofile')}>
+                <Text style={styles.followButtonText}>Follow</Text>
+              </TouchableOpacity>
+              </View>
+            
             <Text style={styles.reelDescription}>{item.description}</Text>
-            <TouchableOpacity style={styles.followButton} onPress={() => router.push('/reelprofile')}>
-            <Text style={styles.followButtonText}>Follow</Text>
-          </TouchableOpacity>
+            
             </View>
             <View style={styles.reelActions}>
-              <Text>{item.likes} Likes</Text>
-              <Text>{item.comments} Comments</Text>
-              <Text>{item.shares} Shares</Text>
+              <View style={{gap: 5}}>
+                <Image />
+              <Text style={styles.reelActionText}>{item.likes}</Text>
+              </View>
+              <View style={{gap: 5}}>
+                <Image />
+                <Text style={styles.reelActionText}>{item.comments}</Text>
+              </View>
+              <View style={{gap: 5}}>
+                <Image />
+                <Text style={styles.reelActionText}>{item.shares}</Text>
+              </View>
             </View>
           </View>
+          </View>
           
-        </View>
       );
     };
 
@@ -119,50 +136,51 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
   },
+ 
   reelInfo: {
     position: 'absolute',
     display:'flex',
     flexDirection: "row",
     justifyContent: "space-between",
-    height: '20%',
-    bottom: 60,
-    left: 16,
-    
-    width:360,
+    bottom: 30,
+    width: width,
+    padding: 10,
     alignItems: 'center',
   },
   reelUser: {
-    fontSize: 18,
+    fontSize: 15,
     fontWeight: 'bold',
-    color: '#fff',
+    color: '#ffffff',
   },
   reelDescription: {
     fontSize: 14,
-    color: '#ddd',
+    color: '#ffffff',
     marginVertical: 8,
   },
   reelActions: {
     display: "flex",
     flexDirection: 'column',
     justifyContent: 'space-between',
-    left: 100,
-    width: '100%',
+    gap: 40,
+    bottom: 150,
     color: '#fff',
   },
   followButton: {
-    position: 'absolute',
-    top: 60,
-    right: 16,
+
     backgroundColor: '#8B0000',
-    padding: 10,
-    borderRadius: 15,
-    width: 100,
+    padding: 7,
+    borderRadius: 45,
+    width: 80,
     alignItems: 'center',
     justifyContent: 'center',
   },
   followButtonText: {
-    color: '#fff',
-    fontSize: 16,
+    color: '#ffffff',
+    fontSize: 13,
+  },
+  reelActionText: {
+    color: '#ffffff',
+    fontSize: 13,
   },
 });
 

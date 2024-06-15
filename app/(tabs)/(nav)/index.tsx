@@ -3,6 +3,8 @@ import { View, Text, Button, StyleSheet, TouchableOpacity,ScrollView, Image,} fr
 import { useRouter } from 'expo-router';
 import Spaces from "../Spaces";
 import Message from '../Message';
+import HomeSpaces from '../HomeSpaces';
+import HomeMessages from '../HomeMessages';
 
 export default function SpacesScreen() {
     const [mode, setMode] = useState("Server");
@@ -19,10 +21,10 @@ export default function SpacesScreen() {
 
   const renderContent = () => {
     switch (currentScreen) {
-      case 'Spaces':
-        return <Spaces />;
+      case 'HomeSpaces':
+        return <HomeSpaces />;
       case 'Message':
-        return <Message />;
+        return <HomeMessages />;
       default:
         return <Spaces />;
     }
@@ -36,7 +38,7 @@ export default function SpacesScreen() {
         </View>
         <View >
         <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={{width: 240,display: "flex",flexDirection: 'row',}}>
-        <TouchableOpacity onPress={() => setCurrentScreen('Spaces')}>
+        <TouchableOpacity onPress={() => setCurrentScreen('HomeSpaces')} >
         <View style={{height: 50,width: 50,backgroundColor: "#fff",borderRadius:50,marginRight: 10}} ></View>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => setCurrentScreen('Spaces')}>

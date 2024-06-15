@@ -1,3 +1,4 @@
+import { router } from 'expo-router';
 import React from 'react';
 import { View, Text, Button, StyleSheet, TouchableOpacity } from 'react-native';
 
@@ -11,7 +12,7 @@ export default function FindFriendsScreen() {
       <TouchableOpacity style={styles.allow} onPress={() => {}}>
         <Text style={{color: '#ffffff'}}>Allow</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={[styles.allow,{backgroundColor: "#D4D4D4"}]} onPress={() => {}}>
+      <TouchableOpacity style={[styles.allow,{backgroundColor: "#D4D4D4"}]} onPress={() => {router.push("./ProfilePic")}}> 
         <Text style={{color: '#000000'}}>Skip</Text>
       </TouchableOpacity>
       </View>
