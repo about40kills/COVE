@@ -2,6 +2,7 @@ import React, { useState, useRef,useEffect } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, Dimensions, NativeSyntheticEvent, NativeScrollEvent, Image } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Video } from 'expo-av';
+import { useFocusEffect } from 'expo-router';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 const reels = [
@@ -34,15 +35,32 @@ export default function ReelsScreen() {
     const [currentIndex, setCurrentIndex] = useState(0);
     const router = useRouter();
 
-    useEffect(() => {
+    
+  useEffect(() => {
+    return () => {
+      videoRefs.current.forEach((video) => {
+        video?.unloadAsync(); // Stop and unload the video when component unmounts
+      });
+    };
+  }, []);
+
+  useFocusEffect(
+    React.useCallback(() => {
       videoRefs.current.forEach((video, index) => {
         if (index === currentIndex) {
-          video?.playAsync();
+          video?.playAsync(); // Resume playing current video when screen is focused
         } else {
-          video?.pauseAsync();
+          video?.pauseAsync(); // Pause other videos when screen is focused
         }
       });
-    }, [currentIndex]);
+
+      return () => {
+        videoRefs.current.forEach((video) => {
+          video?.pauseAsync(); // Pause all videos when screen loses focus
+        });
+      };
+    }, [currentIndex])
+  );
 
     const handleScrollEnd = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
       const contentOffsetY = event.nativeEvent.contentOffset.y;

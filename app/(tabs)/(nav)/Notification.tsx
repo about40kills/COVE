@@ -49,7 +49,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: "flex-start",
-    
+    top: 30,
     backgroundColor: '#FAF2F2',
   },
   searchInput: {
