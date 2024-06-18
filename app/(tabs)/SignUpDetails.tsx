@@ -4,8 +4,6 @@ import { useRouter } from 'expo-router';
 
 export default function SignUpDetailsScreen() {
   const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
   const [dob, setDob] = useState('');
   const router = useRouter();
 
@@ -26,27 +24,8 @@ export default function SignUpDetailsScreen() {
       />
       <Text style={{top: 2,color: "#3A3A3A",fontSize: 10}}>Username must be 2-32 characters</Text>
       </View>
-      <View>
-        <Text style={{bottom: 2,color: "#3A3A3A",fontSize: 15}}>Password</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Password"
-        secureTextEntry
-        value={password}
-        onChangeText={setPassword}
-      />
-      <Text style={{top: 2,color: "#3A3A3A",fontSize: 10}}>Password must be 8 or more characters</Text>
-      </View>
-      <View>
-        <Text style={{bottom: 2,color: "#3A3A3A",fontSize: 15}}>Confirm password</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Confirm Password"
-        secureTextEntry
-        value={confirmPassword}
-        onChangeText={setConfirmPassword}
-      />
-      </View>
+      
+      
       <View>
         <Text style={{bottom: 2,color: "#3A3A3A",fontSize: 15}}>Date of Birth</Text>
       <TextInput
