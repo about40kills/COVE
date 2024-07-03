@@ -21,4 +21,4 @@ const app = initializeApp(firebaseConfig);
 const Auth =  getAuth(app);
 const storage = getStorage(app);
 
-export { Auth}
+export { Auth }

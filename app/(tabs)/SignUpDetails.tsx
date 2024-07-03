@@ -37,7 +37,7 @@ export default function SignUpDetailsScreen() {
       <Text style={{top: 2,color: "#3A3A3A",fontSize: 10}}></Text>
       </View>
      </View>
-      <TouchableOpacity style={styles.create} onPress={() => router.push('/Verification')}>
+      <TouchableOpacity style={styles.create} onPress={() => router.push('/FindFriends')}>
         <Text style={{color: "#ffffff"}}>Create account</Text>
       </TouchableOpacity>
      </View>

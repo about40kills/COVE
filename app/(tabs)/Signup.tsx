@@ -2,12 +2,17 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet,Modal,Alert,Pressable, TouchableOpacity, Image } from 'react-native';
 import { useRouter } from 'expo-router';
 import { lightTheme, darkTheme } from './Themes';
-import {createUserWithEmailAndPassword } from "firebase/auth";
-import { Auth } from "../firebaseConfig"
+import {createUserWithEmailAndPassword, sendEmailVerification } from "firebase/auth";
+import { Auth } from "@/app/firebaseConfig"
 import axios from 'axios'
 
 
-export default function SignUpScreen() {
+interface SignUpScreenProps {
+  setUser: React.Dispatch<React.SetStateAction<string | null>>;
+  setAuthState: React.Dispatch<React.SetStateAction<string | null>>;
+}
+
+const SignUpScreen: React.FC<SignUpScreenProps> = ({ setUser, setAuthState }) => {
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
@@ -58,28 +63,26 @@ export default function SignUpScreen() {
 
   const handleSignup = async () => {
     try {
-    
-      if(options == true) {
-        if(email == "") {
-          setModalMessage('Email cannot be empty.');
-          setModalVisible(true);
-        }
-      }else{
-        if(phone == "") {
-          setModalMessage('Phone number cannot be empty.');
-          setModalVisible(true);
-        }
-      }
-      if( password == ""){
+      if (options && email === "") {
+        setModalMessage('Email cannot be empty.');
+        setModalVisible(true);
+      } else if (!options && phone === "") {
+        setModalMessage('Phone number cannot be empty.');
+        setModalVisible(true);
+      } else if (password === "") {
         setModalMessage('Password cannot be empty.');
         setModalVisible(true);
-      }else if ( password != confirmPassword){
+      } else if (password !== confirmPassword) {
         setModalMessage('Passwords do not match.');
         setModalVisible(true);
       }else{
       try{
-        const response = await createUserWithEmailAndPassword(Auth, email, password);
-      setModalMessage(`User created at: ${response.user.email}`);
+        const response = await createUserWithEmailAndPassword(Auth, email, password)
+         
+        // Send email verification
+         await sendEmailVerification(Auth.currentUser!);
+
+      setModalMessage(`User created at: ${response.user.email}. Please verify your email.`);
       setModalVisible(true);
 
       // If successful, navigate to next screen
@@ -266,3 +269,5 @@ const styles = StyleSheet.create({
   },
 
 });
+
+export default SignUpScreen;

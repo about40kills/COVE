@@ -1,11 +1,30 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet,Image, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
+import { Auth } from '@/app/firebaseConfig';
+import { signInWithEmailAndPassword } from 'firebase/auth';
 
-export default function SignInScreen() {
+interface SignInScreenProps {
+  setUser: React.Dispatch<React.SetStateAction<string | null>>;
+  setAuthState: React.Dispatch<React.SetStateAction<string | null>>;
+}
+
+const SignInScreen: React.FC<SignInScreenProps> = ({ setUser, setAuthState }) => {
   const [emailOrPhone, setEmailOrPhone] = useState('');
   const [password, setPassword] = useState('');
   const router = useRouter();
+
+  const handleSignIn = async () => {
+    try {
+      const response = await signInWithEmailAndPassword(Auth, emailOrPhone, password);
+      setUser(response.user.email);
+      setAuthState('authenticated');
+      router.push('/(nav)');
+    } catch (error) {
+      console.error('Error signing in:', error);
+      // Handle error appropriately, e.g., show a message to the user
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -35,7 +54,7 @@ export default function SignInScreen() {
         Forgot password?
       </Text>
       </View>
-      <TouchableOpacity style={styles.signin} onPress={() => {router.push("./(nav)")}}>
+      <TouchableOpacity style={styles.signin} onPress={handleSignIn}>
           <Text style={{color: "#ffffff"}}>Sign in</Text>
       </TouchableOpacity>
       
@@ -82,3 +101,5 @@ const styles = StyleSheet.create({
     alignItems: "center",
   }
 });
+
+export default SignInScreen;
