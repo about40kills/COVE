@@ -42,7 +42,7 @@ export default function ProfilePicture() {
       <TouchableOpacity style={styles.nextButton} onPress={() => router.push("./(nav)")}>
         <Text style={styles.nextButtonText}>Next</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={{width: 320,height: 50,borderColor: "#800000",borderRadius: 50,borderWidth: 1.5}} onPress={() => router.push('/skipscreen')}>
+      <TouchableOpacity style={{width: 320,height: 50,borderColor: "#800000",borderRadius: 50,borderWidth: 1.5}} onPress={() => router.push("./(nav)")}>
         <Text style={styles.skipText}>skip</Text>
       </TouchableOpacity>
       </View>
