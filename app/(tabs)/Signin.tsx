@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet,Image, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
+import { ScaledSheet } from 'react-native-size-matters';
 import { Auth } from '@/app/firebaseConfig';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 
