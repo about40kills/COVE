@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet,Image, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
+import { ScaledSheet } from 'react-native-size-matters';
 
 export default function SignInScreen() {
   const [emailOrPhone, setEmailOrPhone] = useState('');
@@ -44,7 +45,7 @@ export default function SignInScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const styles = ScaledSheet.create({
   container: {
     flex: 1,
     top: 30,
@@ -53,8 +54,8 @@ const styles = StyleSheet.create({
     backgroundColor: "#FAF2F2",
   },
   title: {
-    fontSize: 24,
-    marginBottom: 2,
+    fontSize: '24@ms',
+    marginBottom: '2@mvs',
   },
   input: {
     height: 50,

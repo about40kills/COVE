@@ -1,6 +1,6 @@
 import { router } from 'expo-router';
 import React from 'react';
-import { View, Text, StyleSheet, Image, TextInput, FlatList, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, Image, TextInput, FlatList, TouchableOpacity, KeyboardAvoidingView } from 'react-native';
 
 const messages = [
   { id: '1', name: 'Jacob Stanley', message: 'Lorem ipsum', time: '12:34 AM', image: require('../../assets/images/Dummy.png') },
@@ -13,6 +13,8 @@ export default function HomeMessages() {
       <View style={styles.header}>
         <Text style={styles.title}>Messages</Text>
       </View>
+      
+
       <TextInput style={styles.searchInput} placeholder="Search" />
       <FlatList
         data={messages}
@@ -28,13 +30,14 @@ export default function HomeMessages() {
           </TouchableOpacity>
         )}
       />
+
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    
     backgroundColor: '#fff',
     padding: 5,
   },

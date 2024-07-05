@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, ImageBackground,TouchableOpacity, Image } from 'react-native';
 import { useRouter } from 'expo-router';
+import { ScaledSheet } from 'react-native-size-matters';
 
 export default function OnboardingScreen() {
   const router = useRouter();
@@ -26,7 +27,7 @@ export default function OnboardingScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const styles = ScaledSheet.create({
   background: {
     flex: 1,
     resizeMode: 'cover',
@@ -35,30 +36,30 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-start',
     alignItems: "center",
-    top: 30
+   
   },
   title: {
-    fontSize: 32,
+    fontSize: '32@ms',
     color: '#fff',
-    marginBottom: 20,
+    marginBottom: "20@mvs",
     alignSelf: "center",
   },
   subtitle: {
-    fontSize: 18,
+    fontSize: '18@ms',
     color: '#fff',
     textAlign: 'center',
-    marginBottom: 40,
-    width: 300
+    marginBottom: '40@mvs',
+    width: '300@s'
   },
   next: {
-    top: 40,
+    top: '40@mvs',
     backgroundColor: "#faf2f2",
-    width: 320,
-    height: 50,
+    width: '320@s',
+    height: '50@vs',
     borderRadius: 15,
     justifyContent: 'center',
     alignItems: "center",
-    marginBottom: 20
+    marginBottom: '20@mvs'
   }
 });
 

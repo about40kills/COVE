@@ -3,7 +3,12 @@ import { View, Text, StyleSheet, FlatList, TouchableOpacity, Dimensions, NativeS
 import { useRouter } from 'expo-router';
 import { Video } from 'expo-av';
 import { useFocusEffect } from 'expo-router';
+import { ScaledSheet } from 'react-native-size-matters';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import Comment from "../../../assets/images/comment.svg"
+import Like from "../../../assets/images/like.svg"
+import Bookmark from "../../../assets/images/bookmark.svg"
+import Share from "../../../assets/images/share.svg"
 
 const reels = [
   { id: '1', user: 'Braintech', description: 'Lorem ipsum dolor sit amet.', likes: '167.8K', comments: '20K', shares: '5K', videoUrl: require("../../../assets/videos/9ebcc95641ae4a629a5caab36c170e05_1709154201486.mp4") },
@@ -80,9 +85,10 @@ export default function ReelsScreen() {
             useNativeControls={false}
           />
           
+          <View style={{flex: 1,width: width,height: height, justifyContent: "flex-end"}}>
           <View style={styles.reelInfo}>
             <View style={{display: 'flex', flexDirection: 'column', justifyContent: 'space-between'}}>
-              <View style={{display: 'flex',flexDirection: 'row',justifyContent: "space-between",alignItems: 'center',gap: 10,marginBottom: 20}}>
+              <View style={{display: 'flex',flexDirection: 'row',justifyContent: "space-between",alignItems: 'center',gap: 10,marginBottom: 10}}>
                 <TouchableOpacity style={{width: 40, height: 40,borderRadius: 50,backgroundColor: '#d4d4d4'}} onPress={()=>{router.push("../ReelProfile")}}>
 
                 </TouchableOpacity>
@@ -97,18 +103,23 @@ export default function ReelsScreen() {
             </View>
             <View style={styles.reelActions}>
               <View style={{gap: 5}}>
-                <Image />
+                <Like />
               <Text style={styles.reelActionText}>{item.likes}</Text>
               </View>
               <View style={{gap: 5}}>
-                <Image />
+                <Comment />
                 <Text style={styles.reelActionText}>{item.comments}</Text>
               </View>
               <View style={{gap: 5}}>
-                <Image />
+                <Bookmark />
+                <Text style={styles.reelActionText}>{item.shares}</Text>
+              </View>
+              <View style={{gap: 5}}>
+                <Share />
                 <Text style={styles.reelActionText}>{item.shares}</Text>
               </View>
             </View>
+          </View>
           </View>
           </View>
           
@@ -139,7 +150,7 @@ export default function ReelsScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const styles = ScaledSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#FAF2FA",
@@ -160,7 +171,7 @@ const styles = StyleSheet.create({
     display:'flex',
     flexDirection: "row",
     justifyContent: "space-between",
-    bottom: 30,
+    bottom: 0,
     width: width,
     padding: 10,
     alignItems: 'center',
@@ -173,14 +184,14 @@ const styles = StyleSheet.create({
   reelDescription: {
     fontSize: 14,
     color: '#ffffff',
-    marginVertical: 8,
+    bottom: 0,
   },
   reelActions: {
     display: "flex",
     flexDirection: 'column',
     justifyContent: 'space-between',
-    gap: 40,
-    bottom: 150,
+    gap: 20,
+    bottom: 50,
     color: '#fff',
   },
   followButton: {

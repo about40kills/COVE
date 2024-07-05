@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet,Modal,Alert,Pressable, TouchableOpacity, Image } from 'react-native';
+import { View, Text, TextInput,ScrollView, KeyboardAvoidingView,Platform, StyleSheet,Modal,Alert,Pressable, TouchableOpacity, Image } from 'react-native';
 import { useRouter } from 'expo-router';
-import { lightTheme, darkTheme } from './Themes';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import {createUserWithEmailAndPassword } from "firebase/auth";
+import { ScaledSheet } from 'react-native-size-matters';
 import { Auth } from "../firebaseConfig"
 import axios from 'axios'
 
@@ -96,173 +97,193 @@ export default function SignUpScreen() {
 
       }
      
-  return (
-    <View style={[styles.container,]}>
-       <Modal
-      animationType="fade"
-      transparent={true}
-      visible={modalVisible}
-      onRequestClose={() => {
-        Alert.alert('Modal has been closed.');
-        setModalVisible(!modalVisible);
-      }}>
-      <View style={styles.centeredView}>
-        <View style={styles.modalView}>
-          <Text style={styles.modalText}>{modalMessage}</Text>
-          <Pressable
-            style={[styles.buttonm, styles.buttonClose]}
-            onPress={() => setModalVisible(!modalVisible)}>
-            <Text style={styles.textStyle}>close</Text>
-          </Pressable>
-        </View>
-      </View>
-    </Modal>
-      <View style={{top: 150}}>
-      <View style={{justifyContent: "center", alignItems: 'center',bottom: 20}}>
-      <Image source={require("../../assets/images/LogoRed.png")} />
-      </View>
-      <Text style={styles.title}>Use email or phone</Text>
-      <View style={styles.inputContainer}>
-        <TouchableOpacity style={[styles.button,{backgroundColor: options ? "#FAF2F2": "transparent"}]} onPress={handleOption1}>
-          <Text style={[styles.text,{color: options? "black" : "#FAF2F2"}]}>Email</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={[styles.button,{backgroundColor: options ? 'transparent':"#FAF2F2"}]} onPress={handleOption2} >
-          <Text style={[styles.text,{color: options? "#FAF2F2" : "black"}]}>Phone</Text>
-        </TouchableOpacity>
-      </View>
-      <TextInput
-        style={styles.input}
-        placeholder={options ? "Email" : "Phone"}
-        value={options? email : phone}
-        onChangeText={options ? setEmail : setPhone}
-      />
-      <View>
-        <Text style={{top: 13,color: "#3A3A3A",fontSize: 15}}>Password</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Password"
-        secureTextEntry
-        value={password}
-        onChangeText={setPassword}
-      />
-      <Text style={{color: "#3A3A3A",fontSize: 10}}>Password must be 8 or more characters</Text>
-      </View>
-      <View>
-        <Text style={{top: 13,color: "#3A3A3A",fontSize: 15}}>Confirm password</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Confirm Password"
-        secureTextEntry
-        value={confirmPassword}
-        onChangeText={setConfirmPassword}
-      />
-      </View>
-      
-      <TouchableOpacity style={styles.next} onPress={handleSignup}>
-        <Text style={{color: "#ffffff"}}>Next</Text>
-      </TouchableOpacity>
-      </View>
-    </View>
-  );
+      return (
+       
+          <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+            <View style={styles.container}>
+              <Modal
+                animationType="fade"
+                transparent={true}
+                visible={modalVisible}
+                onRequestClose={() => {
+                  Alert.alert('Modal has been closed.');
+                  setModalVisible(!modalVisible);
+                }}>
+                <View style={styles.centeredView}>
+                  <View style={styles.modalView}>
+                    <Text style={styles.modalText}>{modalMessage}</Text>
+                    <Pressable
+                      style={[styles.buttonm, styles.buttonClose]}
+                      onPress={() => setModalVisible(!modalVisible)}>
+                      <Text style={styles.textStyle}>close</Text>
+                    </Pressable>
+                  </View>
+                </View>
+              </Modal>
+              <View style={styles.top}>
+                <View style={styles.logo}>
+                  <Image source={require("../../assets/images/LogoRed.png")} />
+                </View>
+                <Text style={styles.title}>Use email or phone</Text>
+                <View style={styles.inputContainer}>
+                  <TouchableOpacity style={[styles.button, { backgroundColor: options ? "#FAF2F2" : "transparent" }]} onPress={handleOption1}>
+                    <Text style={[styles.text, { color: options ? "black" : "#FAF2F2" }]}>Email</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity style={[styles.button, { backgroundColor: options ? 'transparent' : "#FAF2F2" }]} onPress={handleOption2}>
+                    <Text style={[styles.text, { color: options ? "#FAF2F2" : "black" }]}>Phone</Text>
+                  </TouchableOpacity>
+                </View>
+                <Text style={styles.options}>{options ? "Email" : "Phone"}</Text>
+                <TextInput
+                  style={styles.input}
+                  placeholder={options ? "Email" : "Phone"}
+                  value={options ? email : phone}
+                  onChangeText={options ? setEmail : setPhone}
+                  keyboardType={options ? "email-address" : "phone-pad"}
+                  autoCapitalize="none"
+                  textContentType={options? "emailAddress":"password"}
+                />
+                <View>
+                  <Text style={styles.options}>Password</Text>
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Password"
+                    secureTextEntry
+                    value={password}
+                    onChangeText={setPassword}
+                    textContentType="password"
+                  />
+                  <Text style={{ color: "#3A3A3A", fontSize: 10 }}>Password must be 8 or more characters</Text>
+                </View>
+    
+                <View>
+                  <Text style={styles.options}>Confirm password</Text>
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Confirm Password"
+                    secureTextEntry
+                    value={confirmPassword}
+                    onChangeText={setConfirmPassword}
+                    textContentType="password"
+                  />
+                </View>
+    
+                <TouchableOpacity style={styles.next} onPress={handleSignup}>
+                  <Text style={{ color: "#ffffff" }}>Next</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </ScrollView>
+        
+      );
+    };
+    
 
-};
-
-
-
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'flex-start',
-    alignItems: "center",
-    top: 30,
-    backgroundColor: "#faf2f2"
-  },
-  title: {
-    alignSelf: "center",
-    fontSize: 24,
-    marginBottom: 20,
-  },
-  button:{
-    justifyContent: "center",
-   width: 154 ,
-   height: 40,
-   borderRadius: 6,
-  }
-  ,
-  inputContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    alignItems: "center",
-    marginBottom: 20,
-    top: 10,
-    backgroundColor: "#C4C4C4",
-    height: 45,
-    width: 320,
-    borderRadius: 8
-  },
-  text:{
-    alignSelf: "center",
-  },
-  input: {
-    top: 15,
-  
-    height: 50,
-    width: 320,
-    backgroundColor: "#C4C4C4",
-    borderColor: '#C4C4C4',
-    borderWidth: 1,
-    marginBottom: 20,
-    padding: 10,
-    borderRadius: 8
-  },
-  next: {
-    top: 40,
-    backgroundColor: "#800000",
-    width: 320,
-    height: 50,
-    borderRadius: 8,
-    justifyContent: 'center',
-    alignItems: "center",
-  },
-  centeredView: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: 22,
-  },
-  modalView: {
-    margin: 20,
-    backgroundColor: 'white',
-    borderRadius: 20,
-    padding: 35,
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
-  },
-  buttonm: {
-    borderRadius: 10,
-    paddingHorizontal: 5,
-    paddingVertical: 3,
-    elevation: 2,
-  },
-  buttonClose: {
-    backgroundColor: '#800000',
-  },
-  textStyle: {
-    color: 'white',
-    fontWeight: 'bold',
-    textAlign: 'center',
-  },
-  modalText: {
-    marginBottom: 15,
-    textAlign: 'center',
-  },
-
-});
+    
+    const styles = ScaledSheet.create({
+      container: {
+        flex: 1,
+        justifyContent: 'flex-start',
+        alignItems: "center",
+        backgroundColor: "#faf2f2"
+      },
+      top:{
+         marginTop: '100@mvs'
+      },
+      logo:{
+        justifyContent: "center", 
+        alignItems: 'center', 
+        marginBottom: '20@mvs'
+      },
+      options: {
+        marginTop: '10@mvs', 
+        color: "#3A3A3A", 
+        fontSize: '15@ms'
+      },
+      title: {
+        alignSelf: "center",
+        fontSize: '24@ms',
+        marginBottom: '20@vs',
+      },
+      button: {
+        justifyContent: "center",
+        width: '154@s',
+        height: '40@vs',
+        borderRadius: 6,
+      },
+      inputContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        alignItems: "center",
+        marginBottom: '20@vs',
+        marginTop: '10@vs',
+        backgroundColor: "#C4C4C4",
+        height: '45@vs',
+        width: '320@s',
+        borderRadius: 8
+      },
+      text: {
+        alignSelf: "center",
+      },
+      input: {
+        marginTop: '10@mvs',
+        height: '45@vs',
+        width: '320@s',
+        backgroundColor: "#C4C4C4",
+        borderColor: '#C4C4C4',
+        borderWidth: 1,
+        marginBottom: '10@mvs',
+        padding: '5@ms',
+        borderRadius: 8
+      },
+      next: {
+        marginTop: '40@mvs',
+        marginBottom: '10@mvs',
+        backgroundColor: "#800000",
+        width: '320@s',
+        height: '50@vs',
+        borderRadius: 8,
+        justifyContent: 'center',
+        alignItems: "center",
+      },
+      centeredView: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginTop: '22@mvs',
+      },
+      modalView: {
+        margin: '20@ms',
+        backgroundColor: 'white',
+        borderRadius: 20,
+        padding: '35@ms',
+        alignItems: 'center',
+        shadowColor: '#000',
+        shadowOffset: {
+          width: 0,
+          height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+        elevation: 5,
+      },
+      buttonm: {
+        borderRadius: 10,
+        paddingHorizontal: '5@ms',
+        paddingVertical: '3@mvs',
+        elevation: 2,
+      },
+      buttonClose: {
+        backgroundColor: '#800000',
+      },
+      textStyle: {
+        color: 'white',
+        fontWeight: 'bold',
+        textAlign: 'center',
+      },
+      modalText: {
+        marginBottom: '15@mvs',
+        textAlign: 'center',
+      },
+    });
+    

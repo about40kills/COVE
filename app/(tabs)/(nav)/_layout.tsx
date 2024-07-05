@@ -1,5 +1,6 @@
 import { Stack, Tabs } from 'expo-router';
 import React from 'react';
+import { View,KeyboardAvoidingView,Platform } from 'react-native';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { TabBarIcon } from '@/components/navigation/TabBarIcon';
 import { Image } from 'react-native';
@@ -13,8 +14,12 @@ export default function TabLayout() {
   const MarketIcon = require("../../../assets/images/frame2.png");
   const ProfileIcon = require("../../../assets/images/frame3.png");
   return (
+    <View style={{ flex: 1}}>
+    
     <Tabs 
+    
     screenOptions={({ route }) => ({
+      
       tabBarIcon: ({ focused, color, size }) => {
         let iconName;
 
@@ -35,14 +40,22 @@ export default function TabLayout() {
       },
       tabBarActiveTintColor: '#800000',
       tabBarInactiveTintColor: "grey",
+      tabBarHideOnKeyboard: true,
+      tabBarStyle:({
+        backgroundColor: "white"
+      })
+      
     })}
     
     >
+      
       <Tabs.Screen name="index" options={{headerShown: false,title: 'Home',}}/>
       <Tabs.Screen name="Notification" options={{headerShown: false,title: 'Notification',}} />
       <Tabs.Screen name="Reel" options={{headerShown: false,title: 'Reels',}}/>
       <Tabs.Screen name="Market" options={{headerShown: false}}/>
       <Tabs.Screen name="Profile" options={{headerShown: false}}/>
     </Tabs>
+    
+    </View>
   );
 }
