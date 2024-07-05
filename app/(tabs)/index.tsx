@@ -21,7 +21,7 @@ export default function App() {
       }
     });
     return unSubscribedAuth;
-  }, []);
+  }, [user, authState]);
 
   if (authState === null) return <OnboardingScreen setAuthState={setAuthState} setUser={setUser} />;
   if (authState === 'signin') return <SignInScreen setAuthState={setAuthState} setUser={setUser} />;
