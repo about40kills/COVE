@@ -12,17 +12,20 @@ interface SignInScreenProps {
 const SignInScreen: React.FC<SignInScreenProps> = ({ setUser, setAuthState }) => {
   const [emailOrPhone, setEmailOrPhone] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
   const handleSignIn = async () => {
     try {
       const response = await signInWithEmailAndPassword(Auth, emailOrPhone, password);
-      setUser(response.user.email);
-      setAuthState('authenticated');
+      if (typeof setUser === 'function' && response.user.email){
+      setUser(response.user.email);}
+      if (typeof setAuthState === 'function'){
+      setAuthState('authenticated');}
       router.push('/(nav)');
     } catch (error) {
       console.error('Error signing in:', error);
-      // Handle error appropriately, e.g., show a message to the user
+      setError('Failed to sign in. Please check your credentials and try again.');
     }
   };
 
