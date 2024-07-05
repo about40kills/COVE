@@ -1,14 +1,18 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput,ScrollView, KeyboardAvoidingView,Platform, StyleSheet,Modal,Alert,Pressable, TouchableOpacity, Image } from 'react-native';
 import { useRouter } from 'expo-router';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import {createUserWithEmailAndPassword } from "firebase/auth";
-import { ScaledSheet } from 'react-native-size-matters';
-import { Auth } from "../firebaseConfig"
+import { lightTheme, darkTheme } from './Themes';
+import {createUserWithEmailAndPassword, sendEmailVerification } from "firebase/auth";
+import { Auth } from "@/app/firebaseConfig"
 import axios from 'axios'
 
 
-export default function SignUpScreen() {
+interface SignUpScreenProps {
+  setUser: React.Dispatch<React.SetStateAction<string | null>>;
+  setAuthState: React.Dispatch<React.SetStateAction<string | null>>;
+}
+
+const SignUpScreen: React.FC<SignUpScreenProps> = ({ setUser, setAuthState }) => {
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
@@ -59,28 +63,26 @@ export default function SignUpScreen() {
 
   const handleSignup = async () => {
     try {
-    
-      if(options == true) {
-        if(email == "") {
-          setModalMessage('Email cannot be empty.');
-          setModalVisible(true);
-        }
-      }else{
-        if(phone == "") {
-          setModalMessage('Phone number cannot be empty.');
-          setModalVisible(true);
-        }
-      }
-      if( password == ""){
+      if (options && email === "") {
+        setModalMessage('Email cannot be empty.');
+        setModalVisible(true);
+      } else if (!options && phone === "") {
+        setModalMessage('Phone number cannot be empty.');
+        setModalVisible(true);
+      } else if (password === "") {
         setModalMessage('Password cannot be empty.');
         setModalVisible(true);
-      }else if ( password != confirmPassword){
+      } else if (password !== confirmPassword) {
         setModalMessage('Passwords do not match.');
         setModalVisible(true);
       }else{
       try{
-        const response = await createUserWithEmailAndPassword(Auth, email, password);
-      setModalMessage(`User created at: ${response.user.email}`);
+        const response = await createUserWithEmailAndPassword(Auth, email, password)
+         
+        // Send email verification
+         await sendEmailVerification(Auth.currentUser!);
+
+      setModalMessage(`User created at: ${response.user.email}. Please verify your email.`);
       setModalVisible(true);
 
       // If successful, navigate to next screen
@@ -179,6 +181,7 @@ export default function SignUpScreen() {
     };
     
 
+<<<<<<< HEAD
     
     const styles = ScaledSheet.create({
       container: {
@@ -287,3 +290,108 @@ export default function SignUpScreen() {
       },
     });
     
+=======
+};
+
+
+
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'flex-start',
+    alignItems: "center",
+    top: 30,
+    backgroundColor: "#faf2f2"
+  },
+  title: {
+    alignSelf: "center",
+    fontSize: 24,
+    marginBottom: 20,
+  },
+  button:{
+    justifyContent: "center",
+   width: 154 ,
+   height: 40,
+   borderRadius: 6,
+  }
+  ,
+  inputContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: "center",
+    marginBottom: 20,
+    top: 10,
+    backgroundColor: "#C4C4C4",
+    height: 45,
+    width: 320,
+    borderRadius: 8
+  },
+  text:{
+    alignSelf: "center",
+  },
+  input: {
+    top: 15,
+  
+    height: 50,
+    width: 320,
+    backgroundColor: "#C4C4C4",
+    borderColor: '#C4C4C4',
+    borderWidth: 1,
+    marginBottom: 20,
+    padding: 10,
+    borderRadius: 8
+  },
+  next: {
+    top: 40,
+    backgroundColor: "#800000",
+    width: 320,
+    height: 50,
+    borderRadius: 8,
+    justifyContent: 'center',
+    alignItems: "center",
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 22,
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 35,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  buttonm: {
+    borderRadius: 10,
+    paddingHorizontal: 5,
+    paddingVertical: 3,
+    elevation: 2,
+  },
+  buttonClose: {
+    backgroundColor: '#800000',
+  },
+  textStyle: {
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: 'center',
+  },
+
+});
+
+export default SignUpScreen;
+>>>>>>> 24ac941061cdf41d894b199aae654940eb0e452e

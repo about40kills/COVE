@@ -19,7 +19,7 @@ export default function VerificationScreen() {
         value={code}
         onChangeText={setCode}
       />
-      <TouchableOpacity style={styles.verify} onPress={() => router.push('/FindFriends')} >
+      <TouchableOpacity style={styles.verify} onPress={() => router.push('/SignUpName')} >
         <Text style={{color: "#ffffff"}}>Verify</Text>
       </TouchableOpacity>
       </View>

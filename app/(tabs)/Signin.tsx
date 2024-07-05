@@ -1,12 +1,33 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet,Image, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
-import { ScaledSheet } from 'react-native-size-matters';
+import { Auth } from '@/app/firebaseConfig';
+import { signInWithEmailAndPassword } from 'firebase/auth';
 
-export default function SignInScreen() {
+interface SignInScreenProps {
+  setUser: React.Dispatch<React.SetStateAction<string | null>>;
+  setAuthState: React.Dispatch<React.SetStateAction<string | null>>;
+}
+
+const SignInScreen: React.FC<SignInScreenProps> = ({ setUser, setAuthState }) => {
   const [emailOrPhone, setEmailOrPhone] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState<string | null>(null);
   const router = useRouter();
+
+  const handleSignIn = async () => {
+    try {
+      const response = await signInWithEmailAndPassword(Auth, emailOrPhone, password);
+      if (typeof setUser === 'function' && response.user.email){
+      setUser(response.user.email);}
+      if (typeof setAuthState === 'function'){
+      setAuthState('authenticated');}
+      router.push('/(nav)');
+    } catch (error) {
+      console.error('Error signing in:', error);
+      setError('Failed to sign in. Please check your credentials and try again.');
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -36,7 +57,7 @@ export default function SignInScreen() {
         Forgot password?
       </Text>
       </View>
-      <TouchableOpacity style={styles.signin} onPress={() => {router.push("./(nav)")}}>
+      <TouchableOpacity style={styles.signin} onPress={handleSignIn}>
           <Text style={{color: "#ffffff"}}>Sign in</Text>
       </TouchableOpacity>
       
@@ -83,3 +104,5 @@ const styles = ScaledSheet.create({
     alignItems: "center",
   }
 });
+
+export default SignInScreen;

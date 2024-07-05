@@ -1,10 +1,23 @@
 import React from 'react';
-import { View, Text, StyleSheet, ImageBackground,TouchableOpacity, Image } from 'react-native';
+import { View, Text, StyleSheet, ImageBackground, TouchableOpacity, Image } from 'react-native';
 import { useRouter } from 'expo-router';
 import { ScaledSheet } from 'react-native-size-matters';
 
-export default function OnboardingScreen() {
+interface OnboardingScreenProps {
+  setUser: React.Dispatch<React.SetStateAction<string | null>>;
+  setAuthState: React.Dispatch<React.SetStateAction<string | null>>;
+}
+
+const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ setUser, setAuthState }) => {
   const router = useRouter();
+
+  const handleSignup = () => {
+    router.push('/Signup'); // Navigate to Signup screen
+  };
+
+  const handleSignin = () => {
+    router.push('/Signin'); // Navigate to Signin screen
+  };
 
   return (
     <ImageBackground source={require('../../assets/images/Onboarding1.jpg')} style={styles.background}>
@@ -15,10 +28,10 @@ export default function OnboardingScreen() {
         </View>
         <Text style={styles.title}>WELCOME TO COVE!</Text>
         <Text style={styles.subtitle}>Connect, chat, and sell with global friends who share your interests.</Text>
-        <TouchableOpacity style={styles.next} onPress={() => router.push('/Signup')}>
+        <TouchableOpacity style={styles.next} onPress={handleSignup}>
           <Text>Get started</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={[styles.next,{backgroundColor: "transparent",borderWidth: 1,borderColor: '#faf2f2'}]}  onPress={() => router.push('/Signin')} >
+        <TouchableOpacity style={[styles.next,{backgroundColor: "transparent",borderWidth: 1,borderColor: '#faf2f2'}]}  onPress={handleSignin} >
           <Text style={{color: "#faf2f2"}}>Log in</Text>
         </TouchableOpacity>
         </View>
@@ -62,4 +75,6 @@ const styles = ScaledSheet.create({
     marginBottom: '20@mvs'
   }
 });
+
+export default OnboardingScreen;
 
