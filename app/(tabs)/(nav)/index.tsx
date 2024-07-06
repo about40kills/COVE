@@ -40,7 +40,9 @@ export default function SpacesScreen() {
         <View >
         <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={styles.channelScroll}>
         <TouchableOpacity onPress={() => setCurrentScreen('HomeSpaces')} >
-        <View style={styles.channelscontainer} ></View>
+        <View style={styles.channelscontainer} >
+          <Image source={require("../../../assets/images/Minions.png")} style={styles.channelIcon} />
+        </View>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => setCurrentScreen('Spaces')}>
         <View style={styles.channelscontainer}></View>
@@ -100,6 +102,11 @@ const styles = ScaledSheet.create({
     width: '240@ms',
     display: "flex",
     flexDirection: 'row',
+  },
+  channelIcon:{
+    height: "50@ms",
+    width:"50@ms",
+    resizeMode: "contain",
   },
   channelscontainer: {
     height: '50@ms',

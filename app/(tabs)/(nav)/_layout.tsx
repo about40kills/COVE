@@ -53,7 +53,7 @@ export default function TabLayout() {
       <Tabs.Screen name="Notification" options={{headerShown: false,title: 'Notification',}} />
       <Tabs.Screen name="Reel" options={{headerShown: false,title: 'Reels',}}/>
       <Tabs.Screen name="Market" options={{headerShown: false}}/>
-      <Tabs.Screen name="Profile" options={{headerShown: false}}/>
+      <Tabs.Screen name="Profile" options={{headerShown: false,}}/>
     </Tabs>
     
     </View>

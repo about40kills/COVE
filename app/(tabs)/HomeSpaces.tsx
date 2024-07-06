@@ -1,5 +1,6 @@
+import { router } from 'expo-router';
 import React from 'react';
-import { View, Text, StyleSheet, Image, TextInput, FlatList, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, Image, TextInput, FlatList, Pressable, ScrollView, } from 'react-native';
 import { ScaledSheet } from 'react-native-size-matters';
 
 const spaces = [
@@ -17,9 +18,9 @@ const channels = [
 export default function HomeSpaces() {
   return (
     
-      <ScrollView>
+      <View>
         
-        <Image source={require('../../assets/images/Dummy.png')} style={styles.clubImage} />
+        <Image source={require('../../assets/images/MinionsBack.png')} style={styles.clubImage} />
         <View style={styles.spaceName}>
         <Text style={styles.clubName}>Minions Club</Text>
         </View>
@@ -30,14 +31,14 @@ export default function HomeSpaces() {
             data={channels}
             keyExtractor={(item) => item.id}
             renderItem={({ item }) => (
-              <View style={styles.channelItem}>
+              <Pressable style={styles.channelItem} onPress={() => {router.push("/MainMessagePage")}}>
                 <Text style={styles.channelIcon}>{item.icon}</Text>
                 <Text style={styles.channelName}>{item.name}</Text>
-              </View>
+              </Pressable>
             )}
           />
         </View>
-      </ScrollView>
+      </View>
       
     
   );

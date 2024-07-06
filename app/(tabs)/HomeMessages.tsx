@@ -20,7 +20,7 @@ export default function HomeMessages() {
         data={messages}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <TouchableOpacity style={styles.messageItem} onPress={()=> {router.push("./ChatScreen")}}>
+          <TouchableOpacity style={styles.messageItem} onPress={()=> {router.push("/ChatPage")}}>
             <Image source={item.image} style={styles.messageImage} />
             <View style={styles.messageContent}>
               <Text style={styles.messageName}>{item.name}</Text>
