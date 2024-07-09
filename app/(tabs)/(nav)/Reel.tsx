@@ -184,7 +184,7 @@ const styles = ScaledSheet.create({
   reelDescription: {
     fontSize: 14,
     color: '#ffffff',
-    bottom: 0,
+    bottomnpm : 0,
   },
   reelActions: {
     display: "flex",

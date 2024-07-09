@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet,Image, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
 import { ScaledSheet } from 'react-native-size-matters';
-import { Auth } from '@/app/firebaseConfig';
+import { auth } from '@/app/firebaseConfig';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 
 interface SignInScreenProps {
@@ -18,7 +18,7 @@ const SignInScreen: React.FC<SignInScreenProps> = ({ setUser, setAuthState }) =>
 
   const handleSignIn = async () => {
     try {
-      const response = await signInWithEmailAndPassword(Auth, emailOrPhone, password);
+      const response = await signInWithEmailAndPassword(auth, emailOrPhone, password);
       if (typeof setUser === 'function' && response.user.email){
       setUser(response.user.email);}
       if (typeof setAuthState === 'function'){

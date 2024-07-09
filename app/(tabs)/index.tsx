@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import OnboardingScreen from './Onboarding';
-import { Auth } from '@/app/firebaseConfig';
+import { auth } from '../firebaseConfig';
 import { onAuthStateChanged } from 'firebase/auth';
 import SignInScreen from './Signin';
 import SignUpScreen from './Signup';
@@ -11,7 +11,7 @@ export default function App() {
   const [authState, setAuthState] = useState<string | null>(null);
 
   useEffect(() => {
-    const unSubscribedAuth = onAuthStateChanged(Auth, (authenticatedUser) => {
+    const unSubscribedAuth = onAuthStateChanged(auth, (authenticatedUser) => {
       if (authenticatedUser) {
         setUser(authenticatedUser.email);
         setAuthState('authenticated');

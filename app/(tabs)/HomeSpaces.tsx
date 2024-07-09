@@ -11,7 +11,7 @@ const spaces = [
 
 const channels = [
   { id: '1', name: 'VOICE BENCH', icon: '#' },
-  { id: '2', name: 'TEXT BENCH', icon: '>' },
+
   // Add more channels here
 ];
 
