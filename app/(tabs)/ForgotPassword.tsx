@@ -2,14 +2,14 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
 import { useRouter } from 'expo-router';
 import { sendPasswordResetEmail,RecaptchaVerifier,signInWithPhoneNumber } from 'firebase/auth';
-import { Auth } from '@/app/firebaseConfig';
+import { auth } from '@/app/firebaseConfig';
 
 export default function ForgotPasswordScreen() {
   const [emailOrPhone, setEmailOrPhone] = useState('');
   const router = useRouter();
   const handleForgotPassword = async () => {
     try {
-      await sendPasswordResetEmail(Auth, emailOrPhone);
+      await sendPasswordResetEmail(auth, emailOrPhone);
       // Navigate to the verification screen after sending the email
       router.push('/Signin');
     } catch (error) {
