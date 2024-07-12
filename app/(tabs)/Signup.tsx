@@ -4,11 +4,16 @@ import { useRouter } from 'expo-router';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import {createUserWithEmailAndPassword } from "firebase/auth";
 import { ScaledSheet } from 'react-native-size-matters';
-import { Auth } from "../firebaseConfig"
+import { auth } from "@/app/firebaseConfig"
 import axios from 'axios'
 
 
-export default function SignUpScreen() {
+interface SignUpScreenProps {
+  setUser: React.Dispatch<React.SetStateAction<string | null>>;
+  setAuthState: React.Dispatch<React.SetStateAction<string | null>>;
+}
+
+const SignUpScreen: React.FC<SignUpScreenProps> = ({ setUser, setAuthState }) => {
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
@@ -79,7 +84,7 @@ export default function SignUpScreen() {
         setModalVisible(true);
       }else{
       try{
-        const response = await createUserWithEmailAndPassword(Auth, email, password);
+        const response = await createUserWithEmailAndPassword(auth, email, password);
       setModalMessage(`User created at: ${response.user.email}`);
       setModalVisible(true);
 
@@ -286,4 +291,5 @@ export default function SignUpScreen() {
         textAlign: 'center',
       },
     });
+    export default SignUpScreen;
     
