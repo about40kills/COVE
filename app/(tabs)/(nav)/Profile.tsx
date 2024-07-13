@@ -1,41 +1,59 @@
 import React from 'react';
-import { View, Text, Pressable, Image, StyleSheet } from 'react-native';
+import { View, Text, Pressable, Image, Alert } from 'react-native';
 import { ScaledSheet } from 'react-native-size-matters';
-import { router } from 'expo-router';
+import { useRouter } from 'expo-router';
+import { getAuth, signOut } from 'firebase/auth';
 
 const ProfilePage = () => {
+  const router = useRouter();
 
+  const handleLogout = async () => {
+    try {
+      const auth = getAuth();
+      await signOut(auth);
+      router.push('Onboarding');
+    } catch (error) {
+      Alert.alert('Logout Error', 'There was a problem logging out. Please try again.');
+      console.error('Error logging out:', error);
+    }
+  };
 
   return (
-    <View style={{backgroundColor: '#faf2f2',flex: 1}} >
-      <Image source={require("../../../assets/images/Background.png")}style={{width: '100%', height: "30%",borderBottomLeftRadius: 50,borderBottomRightRadius:50}}/> 
+    <View style={{ backgroundColor: '#faf2f2', flex: 1 }}>
+      <Image 
+        source={require("../../../assets/images/Background.png")}
+        style={{ width: '100%', height: "30%", borderBottomLeftRadius: 50, borderBottomRightRadius: 50 }}
+      /> 
       <View style={styles.container}>
-      <View style={styles.header}>
-        <Image source={require("../../../assets/images/Profile (2).png")} style={styles.profileImage} />
-        <Text style={styles.username}>Brainteach Graphics</Text>
-        <Text style={styles.handle}>@brainteach</Text>
+        <View style={styles.header}>
+          <Image 
+            source={require("../../../assets/images/Profile (2).png")} 
+            style={styles.profileImage} 
+          />
+          <Text style={styles.username}>Brainteach Graphics</Text>
+          <Text style={styles.handle}>@brainteach</Text>
+        </View>
+        <View style={{ display: 'flex', flexDirection: "row", gap: 5, justifyContent: 'center', alignContent: 'center' }}> 
+          <Pressable style={styles.buttontop} onPress={() => router.push('../FriendsPage')}>
+            <Text style={styles.buttontopText}>Your Friends</Text>
+          </Pressable>
+          <Pressable style={styles.buttontop} onPress={() => router.push('EditProfilePage')}>
+            <Text style={styles.buttontopText}>Edit Profile</Text>
+          </Pressable>
+        </View>
+        <Pressable style={styles.button} onPress={() => router.push('SettingsPage')}>
+          <Text style={styles.buttonText}>My Public Profile</Text>
+        </Pressable>
+        <Pressable style={styles.button} onPress={() => router.push('SettingsPage')}>
+          <Text style={styles.buttonText}>Settings</Text>
+        </Pressable>
+        <Pressable style={styles.button} onPress={() => router.push('')}>
+          <Text style={styles.buttonText}>Get Cove Premium</Text>
+        </Pressable>
+        <Pressable style={styles.button} onPress={handleLogout}>
+          <Text style={styles.buttonText}>Log out</Text>
+        </Pressable>
       </View>
-      <View style={{display: 'flex',flexDirection: "row", gap: 5,justifyContent: 'center',alignContent: 'center'}}> 
-      <Pressable style={styles.buttontop} onPress={() => router.push('../FriendsPage')}>
-        <Text style={styles.buttontopText}>Your Friends</Text>
-      </Pressable>
-      <Pressable style={styles.buttontop} onPress={() => router.push('EditProfilePage')}>
-        <Text style={styles.buttontopText}>Edit Profile</Text>
-      </Pressable>
-      </View>
-      <Pressable style={styles.button} onPress={() => router.push('SettingsPage')}>
-        <Text style={styles.buttonText}>My Public Profile</Text>
-      </Pressable>
-      <Pressable style={styles.button} onPress={() => router.push('SettingsPage')}>
-        <Text style={styles.buttonText}>Settings</Text>
-      </Pressable>
-      <Pressable style={styles.button} onPress={() => router.push('')}>
-        <Text style={styles.buttonText}>Get Cove Premium</Text>
-      </Pressable>
-      <Pressable style={styles.button} onPress={() => router.push('')}>
-        <Text style={styles.buttonText}>Log out</Text>
-      </Pressable>
-    </View>
     </View>
   );
 };
@@ -45,13 +63,12 @@ const styles = ScaledSheet.create({
     flex: 1,
     top: -50,
     padding: '5@s',
-    position:"relative",
+    position: "relative",
   },
   header: {
     alignItems: 'center',
     marginBottom: '20@s',
-    
-    },
+  },
   profileImage: {
     width: '80@s',
     height: '80@s',
@@ -82,9 +99,8 @@ const styles = ScaledSheet.create({
     padding: '15@s',
     marginVertical: '10@s',
     borderRadius: '10@s',
-    borderwidth: '5@s',
-    borderColor: "#faf2f2"
-    
+    borderWidth: '5@s',
+    borderColor: "#faf2f2",
   },
   buttonText: {
     fontSize: '16@s',

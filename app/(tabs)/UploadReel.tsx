@@ -1,16 +1,20 @@
+// UploadReelScreen.tsx
 import React, { useState } from 'react';
-import { View, Button, Image, StyleSheet, Text } from 'react-native';
+import { View, TouchableOpacity, StyleSheet, Text, Alert } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { getFirestore, collection, addDoc } from 'firebase/firestore';
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { useRouter } from 'expo-router';
 import { initializeApp } from 'firebase/app';
 import { firebaseConfig } from '@/app/firebaseConfig'; // Ensure the correct path to firebaseConfig
+import { getAuth } from 'firebase/auth';
+import { Video, ResizeMode } from 'expo-av';
 
 // Initialize Firebase app
 const app = initializeApp(firebaseConfig);
 const firestore = getFirestore(app);
 const storage = getStorage(app);
+const auth = getAuth(app);
 
 export default function UploadReelScreen() {
   const [video, setVideo] = useState<string | null>(null);
@@ -60,9 +64,10 @@ export default function UploadReelScreen() {
       });
 
       console.log('Video uploaded successfully:', downloadURL);
-      router.push('/ReelsScreen');
+      router.push('/Reel');
     } catch (error) {
       console.error('Error uploading video:', error);
+      Alert.alert('Upload Failed', 'There was an error uploading the video. Please try again.');
     } finally {
       setUploading(false);
     }
@@ -70,12 +75,16 @@ export default function UploadReelScreen() {
 
   return (
     <View style={styles.container}>
-      <Button title="Pick a Video from Camera Roll" onPress={pickVideo} />
+       <TouchableOpacity style={styles.pickButton} onPress={pickVideo}>
+        <Text style={styles.buttonText}>Pick a Video from Camera Roll</Text>
+      </TouchableOpacity>
       {video && (
         <>
           <Text>Selected Video:</Text>
-          <Image source={{ uri: video }} style={styles.thumbnail} />
-          <Button title="Upload Video" onPress={uploadVideo} disabled={uploading} />
+          <Video source={{ uri: video }} style={styles.thumbnail} useNativeControls resizeMode={ResizeMode.CONTAIN} isLooping />
+          <TouchableOpacity style={styles.uploadButton} onPress={uploadVideo} disabled={uploading}>
+            <Text style={styles.buttonText}>Upload Video</Text>
+          </TouchableOpacity>
         </>
       )}
     </View>
@@ -87,7 +96,24 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: '#FAF2F2',
     padding: 20,
+  },
+  pickButton: {
+    backgroundColor: '#800000', 
+    padding: 15,
+    borderRadius: 10,
+    marginVertical: 10,
+  },
+  uploadButton: {
+    backgroundColor: '#800000', 
+    padding: 15,
+    borderRadius: 10,
+    marginVertical: 10,
+  },
+  buttonText: {
+    color: '#FFFFFF',
+    fontSize: 16,
   },
   thumbnail: {
     width: 300,

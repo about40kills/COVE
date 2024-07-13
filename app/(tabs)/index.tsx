@@ -5,6 +5,7 @@ import { onAuthStateChanged } from 'firebase/auth';
 import SignInScreen from './Signin';
 import SignUpScreen from './Signup';
 import TabLayout from './(nav)/_layout';
+import UploadReelScreen from './UploadReel';
 
 export default function App() {
   const [user, setUser] = useState<string | null>(null);
