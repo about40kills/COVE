@@ -1,84 +1,96 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { View, Text, FlatList, TouchableOpacity, Dimensions, NativeSyntheticEvent, NativeScrollEvent } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Video, ResizeMode } from 'expo-av';
 import { useFocusEffect } from 'expo-router';
 import { ScaledSheet } from 'react-native-size-matters';
 import { firestore } from '@/app/firebaseConfig'; // Ensure the correct path to firebaseConfig
-import { collection, getDocs } from 'firebase/firestore';
+import { collection, query, onSnapshot, DocumentData } from 'firebase/firestore';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import Comment from "../../../assets/images/comment.svg";
 import Like from "../../../assets/images/like.svg";
 import Bookmark from "../../../assets/images/bookmark.svg";
 import Share from "../../../assets/images/share.svg";
 
-const reels = [
-  { id: '1', user: 'Braintech', description: 'Lorem ipsum dolor sit amet.', likes: '167.8K', comments: '20K', shares: '5K', videoUrl: require("../../../assets/videos/9ebcc95641ae4a629a5caab36c170e05_1709154201486.mp4") },
-  { id: '2', user: 'Braintech', description: 'Lorem ipsum dolor sit amet.', likes: '167.8K', comments: '20K', shares: '5K', videoUrl: require('../../../assets/videos/50c7f1b9b5fc470d80c78932cb3ad408_1713284528574.mp4') },
-  { id: '3', user: 'Braintech', description: 'Lorem ipsum dolor sit amet.', likes: '167.8K', comments: '20K', shares: '5K', videoUrl: require('../../../assets/videos/017b9139321f4284858f81fdc710bd75_1713915175561.mp4') },
-];
-
 const { height, width } = Dimensions.get('window');
 
+type UserType = {
+  id: string;
+  username: string;
+  displayName: string;
+  birthDate: string;
+};
+type VideoType = {
+  id: string;
+  videoUrl: string;
+  userId: string;
+  description: string;
+  likes: string;
+  comments: string;
+  shares: string;
+  createdAt: Date;
+  user?: UserType;
+};
+
 export default function ReelsScreen() {
-  interface VideoItem {
-    id: string;
-    videoUrl: any;
-    user: string;
-    description: string;
-    likes: string;
-    comments: string;
-    shares: string;
-  }
+  const [videos, setVideos] = useState<VideoType[]>([]);
+  const flatListRef = useRef<FlatList<VideoType>>(null);
+  const videoRefs = useRef<(Video | null)[]>([]);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const router = useRouter();
 
-  interface VideoListProps {
-    videos: VideoItem[];
-  }
+  useEffect(() => {
+    const q = query(collection(firestore, 'reels'));
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+      const videoList: VideoType[] = [];
+      querySnapshot.forEach((doc: DocumentData) => {
+        videoList.push({ id: doc.id, ...doc.data() } as VideoType);
+      });
+      setVideos(videoList);
+    });
 
-  const VideoList: React.FC<VideoListProps> = ({ videos }) => {
-    const flatListRef = useRef<FlatList<VideoItem>>(null);
-    const videoRefs = useRef<(Video | null)[]>([]);
-    const [currentIndex, setCurrentIndex] = useState(0);
-    const router = useRouter();
+    return () => unsubscribe();
+  }, []);
 
-    useEffect(() => {
+  useEffect(() => {
+    return () => {
+      videoRefs.current.forEach((video) => {
+        video?.unloadAsync(); // Stop and unload the video when component unmounts
+      });
+    };
+  }, []);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      videoRefs.current.forEach((video, index) => {
+        if (index === currentIndex) {
+          video?.playAsync(); // Resume playing current video when screen is focused
+        } else {
+          video?.pauseAsync(); // Pause other videos when screen is focused
+        }
+      });
+
       return () => {
         videoRefs.current.forEach((video) => {
-          video?.unloadAsync(); // Stop and unload the video when component unmounts
+          video?.pauseAsync(); // Pause all videos when screen loses focus
         });
       };
-    }, []);
+    }, [currentIndex])
+  );
 
-    useFocusEffect(
-      React.useCallback(() => {
-        videoRefs.current.forEach((video, index) => {
-          if (index === currentIndex) {
-            video?.playAsync(); // Resume playing current video when screen is focused
-          } else {
-            video?.pauseAsync(); // Pause other videos when screen is focused
-          }
-        });
+  const handleScrollEnd = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+    const contentOffsetY = event.nativeEvent.contentOffset.y;
+    const newIndex = Math.floor(contentOffsetY / height);
+    setCurrentIndex(newIndex);
+  };
 
-        return () => {
-          videoRefs.current.forEach((video) => {
-            video?.pauseAsync(); // Pause all videos when screen loses focus
-          });
-        };
-      }, [currentIndex])
-    );
-
-    const handleScrollEnd = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
-      const contentOffsetY = event.nativeEvent.contentOffset.y;
-      const newIndex = Math.floor(contentOffsetY / height);
-      setCurrentIndex(newIndex);
-    };
-
-    const renderItem = ({ item, index }: { item: VideoItem, index: number }) => {
+  const renderItem = useCallback(
+    ({ item, index }: { item: VideoType; index: number }) => {
       return (
         <View style={styles.reelItem}>
           <Video
             ref={(ref) => (videoRefs.current[index] = ref)}
-            source={item.videoUrl}
+            source={{ uri: item.videoUrl }}
             style={styles.reelVideo}
             resizeMode={ResizeMode.COVER}
             isLooping
@@ -92,7 +104,7 @@ export default function ReelsScreen() {
                   <TouchableOpacity style={{ width: 40, height: 40, borderRadius: 50, backgroundColor: '#d4d4d4' }} onPress={() => { router.push("../ReelProfile") }}>
 
                   </TouchableOpacity>
-                  <Text style={styles.reelUser}>{item.user}</Text>
+                  <Text style={styles.reelUser}>{item.user?.displayName}</Text>
                   <TouchableOpacity style={styles.followButton} onPress={() => router.push('/reelprofile')}>
                     <Text style={styles.followButtonText}>Follow</Text>
                   </TouchableOpacity>
@@ -122,33 +134,30 @@ export default function ReelsScreen() {
             </View>
           </View>
         </View>
-
       );
-    };
-
-    return (
-      <View style={styles.container}>
-        <TouchableOpacity style={styles.addButton} onPress={() => router.push('/UploadReel')}>
-          <Text style={styles.addButtonText}>＋</Text>
-        </TouchableOpacity>
-        <FlatList
-          data={videos}
-          keyExtractor={(item) => item.id}
-          ref={flatListRef}
-          renderItem={renderItem}
-          snapToInterval={height}
-          decelerationRate="fast"
-          showsVerticalScrollIndicator={false}
-          pagingEnabled
-          onMomentumScrollEnd={handleScrollEnd}
-        />
-      </View>
-    );
-  };
+    },
+    [router]
+  );
 
   return (
     <GestureHandlerRootView style={styles.container}>
-      <VideoList videos={reels} />
+      <TouchableOpacity style={styles.addButton} onPress={() => router.push('/UploadReel')}>
+        <Text style={styles.addButtonText}>＋</Text>
+      </TouchableOpacity>
+      <FlatList
+        data={videos}
+        keyExtractor={(item) => item.id}
+        ref={flatListRef}
+        renderItem={renderItem}
+        snapToInterval={height}
+        decelerationRate="fast"
+        showsVerticalScrollIndicator={false}
+        pagingEnabled
+        onMomentumScrollEnd={handleScrollEnd}
+        initialNumToRender={3}
+        maxToRenderPerBatch={5}
+        windowSize={10}
+      />
     </GestureHandlerRootView>
   );
 }
