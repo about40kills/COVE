@@ -141,9 +141,7 @@ export default function ReelsScreen() {
 
   return (
     <GestureHandlerRootView style={styles.container}>
-      <TouchableOpacity style={styles.addButton} onPress={() => router.push('/UploadReel')}>
-        <Text style={styles.addButtonText}>＋</Text>
-      </TouchableOpacity>
+    
       <FlatList
         data={videos}
         keyExtractor={(item) => item.id}
@@ -165,7 +163,7 @@ export default function ReelsScreen() {
 const styles = ScaledSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#FAF2FA",
+    backgroundColor: "#000000",
   },
   reelItem: {
     height: height,

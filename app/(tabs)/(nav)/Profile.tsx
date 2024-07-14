@@ -41,7 +41,7 @@ const ProfilePage = () => {
             <Text style={styles.buttontopText}>Edit Profile</Text>
           </Pressable>
         </View>
-        <Pressable style={styles.button} onPress={() => router.push('SettingsPage')}>
+        <Pressable style={styles.button} onPress={() => router.push('../ReelProfile')}>
           <Text style={styles.buttonText}>My Public Profile</Text>
         </Pressable>
         <Pressable style={styles.button} onPress={() => router.push('SettingsPage')}>
