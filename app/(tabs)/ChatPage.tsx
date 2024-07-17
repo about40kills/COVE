@@ -1,92 +1,88 @@
-import React from 'react';
-import { View, Text, TextInput, TouchableOpacity, FlatList,Image, Pressable, KeyboardAvoidingView, Platform } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, TextInput, TouchableOpacity, FlatList, Image, Pressable, KeyboardAvoidingView, Platform } from 'react-native';
 import { ScaledSheet, vs } from 'react-native-size-matters';
 import { useRouter } from 'expo-router';
+import { translateText } from '@/app/translationService'; 
 
-
-
-
-const messages = [
+const initialMessages = [
   { id: '1', text: 'Hello!', user: 'other' },
   { id: '2', text: 'Hi, how are you?', user: 'me' },
-  { id: '1', text: 'Hello!', user: 'other' },
-  { id: '2', text: 'Hi, how are you?', user: 'me' },
-  { id: '1', text: 'Hello!', user: 'other' },
-  { id: '2', text: 'Hi, how are you?', user: 'me' },
-  { id: '1', text: 'Hello!', user: 'other' },
-  { id: '2', text: 'Hi, how are you?', user: 'me' },
-  { id: '1', text: 'Hello!', user: 'other' },
-  { id: '2', text: 'Hi, how are you?', user: 'me' },
-  { id: '1', text: 'Hello!', user: 'other' },
-  { id: '2', text: 'Hi, how are you?', user: 'me' },
-  { id: '1', text: 'Hello!', user: 'other' },
-  { id: '2', text: 'Hi, how are you?', user: 'me' },
-  { id: '1', text: 'Hello!', user: 'other' },
-  { id: '2', text: 'Hi, how are you?', user: 'me' },
-  { id: '1', text: 'Hello!', user: 'other' },
-  { id: '2', text: 'Hi, how are you?', user: 'me' },
-  { id: '1', text: 'Hello!', user: 'other' },
-  { id: '2', text: 'Hi, how are you?', user: 'me' },
-  { id: '1', text: 'Hello!', user: 'other' },
-  { id: '2', text: 'Hi, how are you?', user: 'me' },
-  { id: '1', text: 'Hello!', user: 'other' },
-  { id: '2', text: 'Hi, how are you?', user: 'me' },
-  { id: '1', text: 'Hello!', user: 'other' },
-  { id: '2', text: 'Hi, how are you?', user: 'me' },
-  { id: '1', text: 'Hello!', user: 'other' },
-  { id: '2', text: 'Hi, how are you?', user: 'me' },
-  { id: '1', text: 'Hello!', user: 'other' },
-  { id: '2', text: 'Hi, how are you?', user: 'me' },
-  { id: '1', text: 'Hello!', user: 'other' },
-  { id: '2', text: 'Hi, how are you?', user: 'me' },
-  { id: '1', text: 'Hello!', user: 'other' },
-  { id: '2', text: 'Hi, how are you?', user: 'me' },
-
   // Add more messages here
 ];
 
 type Message = {
-    text: string;
-    user: string;
-  };
+  id: string;
+  text: string;
+  user: string;
+};
 
-const MessageBubble: React.FC<{ message: Message}> = ({ message }) => (
+const MessageBubble: React.FC<{ message: Message; onTranslate: () => void }> = ({ message, onTranslate }) => (
   <View style={[styles.messageBubble, message.user === 'me' ? styles.myMessage : styles.otherMessage]}>
     <Text style={styles.messageText}>{message.text}</Text>
+    <TouchableOpacity onPress={onTranslate} style={styles.translateButton}>
+      <Text style={styles.translateButtonText}>Translate</Text>
+    </TouchableOpacity>
   </View>
 );
 
 const ChatPage = () => {
-  const router = useRouter();
+  const [messages, setMessages] = useState<Message[]>(initialMessages);
+  const [inputMessage, setInputMessage] = useState('');
+  const [translatedMessages, setTranslatedMessages] = useState<{ [key: string]: string }>({});
+  
+  const handleSend = () => {
+    if (inputMessage.trim()) {
+      const newMessage: Message = {
+        id: String(messages.length + 1),  // Simple ID generation for demonstration
+        text: inputMessage,
+        user: 'me',
+      };
+      setMessages((prevMessages) => [...prevMessages, newMessage]);
+      setInputMessage('');  // Clear the input field
+    }
+  };
+
+  const handleTranslate = async (id: string, text: string) => {
+    const translatedText = await translateText(text);
+    setTranslatedMessages((prev) => ({ ...prev, [id]: translatedText }));
+  };
 
   return (
     <View style={styles.container}>
-        <View style={styles.TopBar}>
-            <Image source={require("../../assets/images/Profile8.png")} style={styles.Image} />
-            <View style={styles.Icons}>
-            <Pressable>
-            <Image source={require("../../assets/images/VoiceCall.png")} style={styles.Images}/>
-            </Pressable>
-            <Pressable>
-                <Image source={require("../../assets/images/VideoCall.png")} style={styles.Images}/>
-            </Pressable>
-            </View>
+      <View style={styles.TopBar}>
+        <Image source={require("../../assets/images/Profile8.png")} style={styles.Image} />
+        <View style={styles.Icons}>
+          <Pressable>
+            <Image source={require("../../assets/images/VoiceCall.png")} style={styles.Images} />
+          </Pressable>
+          <Pressable>
+            <Image source={require("../../assets/images/VideoCall.png")} style={styles.Images} />
+          </Pressable>
         </View>
+      </View>
       <FlatList
         data={messages}
         keyExtractor={(item) => item.id}
-        renderItem={({ item }) => <MessageBubble message={item}  />}
+        renderItem={({ item }) => (
+          <MessageBubble
+            message={{ ...item, text: translatedMessages[item.id] || item.text }}
+            onTranslate={() => handleTranslate(item.id, item.text)}
+          />
+        )}
         showsVerticalScrollIndicator={false}
       />
-      <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}  keyboardVerticalOffset={10}
-      >
-      <View style={styles.inputContainer}>
-        <TextInput style={styles.input} placeholder="Type a message" />
-        <TouchableOpacity style={styles.sendButton}>
-          <Text style={styles.sendButtonText}>Send</Text>
-        </TouchableOpacity>
-      </View>
+      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} keyboardVerticalOffset={10}>
+        <View style={styles.inputContainer}>
+          <TextInput
+            style={styles.input}
+            placeholder="Type a message"
+            value={inputMessage}
+            onChangeText={setInputMessage}
+          />
+          <TouchableOpacity onPress={handleSend} style={styles.sendButton}>
+            <Text style={styles.sendButtonText}>Send</Text>
+          </TouchableOpacity>
+        </View>
       </KeyboardAvoidingView>
     </View>
   );
@@ -97,32 +93,30 @@ const styles = ScaledSheet.create({
     flex: 1,
     backgroundColor: '#fff',
     padding: '10@s',
-    
-    
   },
-  TopBar:{
+  TopBar: {
     display: 'flex',
     flexDirection: "row",
-    justifyContent:"space-between",
+    justifyContent: "space-between",
     borderBottomWidth: 1,
     borderBottomColor: "#c4c4c4",
     alignItems: "center",
-    marginTop: "30@vs"
+    marginTop: "30@vs",
   },
-  Icons:{
+  Icons: {
     display: "flex",
     flexDirection: 'row',
-    gap: "2@s"
+    gap: "2@s",
   },
-  Image:{
+  Image: {
     height: "50@vs",
     width: "50@s",
-    resizeMode: "contain"
+    resizeMode: "contain",
   },
-  Images:{
+  Images: {
     height: "30@vs",
     width: "30@s",
-    resizeMode: "contain"
+    resizeMode: "contain",
   },
   messageBubble: {
     maxWidth: '70%',
@@ -141,14 +135,24 @@ const styles = ScaledSheet.create({
   messageText: {
     fontSize: '16@vs',
   },
+  translateButton: {
+    marginTop: '5@vs',
+    //backgroundColor: 'rgba(0, 0, 255, 0.1)',  
+    paddingVertical: '2@vs',                  
+    paddingHorizontal: '6@s',                 
+    borderRadius: '5@vs',
+    alignSelf: 'flex-start',
+  },
+  translateButtonText: {
+    color: '#0000FF',  
+    fontSize: '12@vs', 
+  },
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     borderTopWidth: 1,
     borderColor: '#eee',
     padding: '10@s',
-
- 
   },
   input: {
     flex: 1,
@@ -157,7 +161,6 @@ const styles = ScaledSheet.create({
     borderWidth: 1,
     borderRadius: '20@vs',
     paddingLeft: '15@s',
-    marginTop: "0@vs",
   },
   sendButton: {
     marginLeft: '10@s',
